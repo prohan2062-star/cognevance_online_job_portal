@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Create Account | CareerConnect{% endblock %}
+{% block content %}
+<section class="auth-layout">
+    <div class="auth-aside">
+        <p class="eyebrow">JOIN THE COMMUNITY</p>
+        <h1>Good things happen when you take the next step.</h1>
+        <p>Create an account to find opportunities or hire your next great teammate.</p>
+        <div class="aside-stat"><strong>One platform.</strong><span>Two paths: grow your career or grow your
+                team.</span></div>
+    </div>
+    <div class="form-card">
+        <h2>Create your account</h2>
+        <p class="muted">It only takes a minute to get started.</p>
+        <form method="post" class="stack-form">
+            <label>Full name<input name="name" required maxlength="100" autocomplete="name"
+                    value="{{ request.form.get('name','') }}"></label>
+            <label>Email address<input type="email" name="email" required autocomplete="email"
+                    value="{{ request.form.get('email','') }}"></label>
+            <label>Password<input type="password" name="password" required minlength="8"
+                    autocomplete="new-password"><small>Use at least 8 characters.</small></label>
+            <label>I want to
+                <select name="role">
+                    <option value="seeker" {% if request.form.get('role','seeker')=='seeker' %}selected{% endif %}>Find
+                        a job</option>
+                    <option value="employer" {% if request.form.get('role')=='employer' %}selected{% endif %}>Hire
+                        candidates / post jobs</option>
+                </select>
+            </label>
+            <button class="button primary full" type="submit">Create account</button>
+        </form>
+        <p class="form-foot">Already have an account? <a href="{{ url_for('login') }}">Log in</a></p>
+    </div>
+</section>
+{% endblock %}

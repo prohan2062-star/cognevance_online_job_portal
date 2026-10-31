@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Find Jobs | CareerConnect{% endblock %}
+{% block content %}
+<section class="hero">
+    <div class="eyebrow">YOUR NEXT CHAPTER STARTS HERE</div>
+    <h1>Find a job you <span class="gradient-text">love.</span></h1>
+    <p class="hero-copy">Discover opportunities, connect with employers, and take the next step in your career.</p>
+    <form class="search-bar" action="{{ url_for('index') }}" method="get">
+        <label class="sr-only" for="q">Search jobs</label>
+        <input id="q" name="q" value="{{ q }}" placeholder="Job title, company, or location">
+        <button class="button primary" type="submit">Search jobs</button>
+    </form>
+    <div class="hero-tags"><span>✦ Verified opportunities</span><span>✦ Simple applications</span><span>✦ Career
+            growth</span></div>
+</section>
+<section class="section">
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">EXPLORE OPPORTUNITIES</p>
+            <h2>{% if q %}Search results for “{{ q }}”{% else %}Latest job openings{% endif %}</h2>
+        </div><span class="muted">{{ jobs|length }} job{{ '' if jobs|length == 1 else 's' }} found</span>
+    </div>
+    {% if jobs %}
+    <div class="job-grid">
+        {% for job in jobs %}
+        <article class="job-card">
+            <div class="job-card-top">
+                <div class="company-icon">{{ job['company'][:1]|upper }}</div><span class="pill">{{ job['job_type']
+                    }}</span>
+            </div>
+            <h3><a href="{{ url_for('job_detail', job_id=job['id']) }}">{{ job['title'] }}</a></h3>
+            <p class="company-name">{{ job['company'] }}</p>
+            <p class="job-meta"><span>⌖ {{ job['location'] }}</span>{% if job['salary'] %}<span>₹ {{ job['salary']
+                    }}</span>{% endif %}</p>
+            <p class="excerpt">{{ job['description']|truncate(130) }}</p>
+            <a class="text-link" href="{{ url_for('job_detail', job_id=job['id']) }}">View details <span>→</span></a>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">⌕</div>
+        <h3>No jobs found yet</h3>
+        <p>{% if q %}Try another keyword or location.{% else %}Be the first employer to share an opportunity. Create an
+            employer account to post a job.{% endif %}</p><a class="button primary"
+            href="{{ url_for('register') }}">Join CareerConnect</a>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

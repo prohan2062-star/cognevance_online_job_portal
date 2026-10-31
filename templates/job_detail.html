@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}{{ job['title'] }} | CareerConnect{% endblock %}
+{% block content %}
+<div class="breadcrumbs"><a href="{{ url_for('index') }}">Jobs</a> / <span>{{ job['title'] }}</span></div>
+<section class="detail-layout">
+    <article class="detail-main">
+        <div class="detail-heading">
+            <div class="company-icon large">{{ job['company'][:1]|upper }}</div>
+            <div><span class="pill">{{ job['job_type'] }}</span>
+                <h1>{{ job['title'] }}</h1>
+                <p class="company-name">{{ job['company'] }}</p>
+            </div>
+        </div>
+        <div class="job-meta detail-meta"><span>⌖ {{ job['location'] }}</span>{% if job['salary'] %}<span>₹ {{
+                job['salary'] }}</span>{% endif %}<span>Posted {{ job['created_at'][:10] }}</span></div>
+        <div class="content-block">
+            <h2>About this role</h2>
+            <p class="preserve-lines">{{ job['description'] }}</p>
+        </div>
+        {% if job['requirements'] %}<div class="content-block">
+            <h2>Requirements</h2>
+            <p class="preserve-lines">{{ job['requirements'] }}</p>
+        </div>{% endif %}
+    </article>
+    <aside class="apply-card">
+        <h2>Interested in this role?</h2>
+        <p class="muted">Send your application directly through CareerConnect.</p>
+        {% if not session.get('user_id') %}<a class="button primary full" href="{{ url_for('login') }}">Log in to
+            apply</a>
+        {% elif session.get('role') == 'seeker' %}
+        {% if applied %}<div class="flash success">You have already applied for this job.</div>{% else %}
+        <form action="{{ url_for('apply_job', job_id=job['id']) }}" method="post" class="stack-form"><label>Cover letter
+                (optional)<textarea name="cover_letter" rows="5"
+                    placeholder="Tell the employer why you're a good fit..."></textarea></label><button
+                class="button primary full" type="submit">Submit application</button></form>
+        {% endif %}
+        {% else %}<p class="muted">Employer accounts cannot apply for jobs.</p>{% endif %}
+    </aside>
+</section>
+{% endblock %}

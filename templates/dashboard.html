@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | CareerConnect{% endblock %}
+{% block content %}
+<section class="dashboard-header">
+    <div>
+        <p class="eyebrow">YOUR WORKSPACE</p>
+        <h1>Hello, {{ session.get('name') }} 👋</h1>
+        <p class="muted">{% if session.get('role') == 'employer' %}Manage your job listings and review applicants.{%
+            else %}Track your job applications in one place.{% endif %}</p>
+    </div>{% if session.get('role') == 'employer' %}<a class="button primary" href="{{ url_for('post_job') }}">＋ Post a
+        job</a>{% endif %}
+</section>
+{% if session.get('role') == 'employer' %}
+<section class="section">
+    <div class="section-heading">
+        <h2>Your job listings</h2><span class="muted">{{ my_jobs|length }} listed</span>
+    </div>
+    {% if my_jobs %}<div class="dashboard-list">{% for job in my_jobs %}<article class="list-card">
+            <div>
+                <h3><a href="{{ url_for('job_detail', job_id=job['id']) }}">{{ job['title'] }}</a></h3>
+                <p class="muted">{{ job['company'] }} · {{ job['location'] }} · {{ job['job_type'] }}</p>
+            </div>
+            <div class="actions"><a class="button secondary small"
+                    href="{{ url_for('edit_job', job_id=job['id']) }}">Edit</a>
+                <form method="post" action="{{ url_for('delete_job', job_id=job['id']) }}"
+                    onsubmit="return confirm('Delete this job and its applications?')"><button
+                        class="button danger small" type="submit">Delete</button></form>
+            </div>
+        </article>{% endfor %}</div>{% else %}<div class="empty-state compact">
+        <h3>No jobs posted yet</h3>
+        <p>Create your first listing to start receiving applications.</p><a class="button primary"
+            href="{{ url_for('post_job') }}">Post a job</a>
+    </div>{% endif %}
+</section>
+<section class="section">
+    <div class="section-heading">
+        <h2>Applications received</h2><span class="muted">{{ applications|length }} total</span>
+    </div>
+    {% if applications %}<div class="dashboard-list">{% for item in applications %}<article class="list-card applicant">
+            <div>
+                <h3>{{ item['applicant_name'] }} <span class="pill">{{ item['status'] }}</span></h3>
+                <p class="muted">{{ item['job_title'] }} · {{ item['applicant_email'] }}</p>{% if item['cover_letter']
+                %}<p>{{ item['cover_letter'] }}</p>{% endif %}
+            </div><span class="muted">{{ item['applied_at'][:10] }}</span>
+        </article>{% endfor %}</div>{% else %}<div class="empty-state compact">
+        <p>No applications received yet.</p>
+    </div>{% endif %}
+</section>
+{% else %}
+<section class="section">
+    <div class="section-heading">
+        <h2>Your applications</h2><span class="muted">{{ applications|length }} submitted</span>
+    </div>
+    {% if applications %}<div class="dashboard-list">{% for item in applications %}<article class="list-card">
+            <div>
+                <h3><a href="{{ url_for('job_detail', job_id=item['job_id']) }}">{{ item['job_title'] }}</a></h3>
+                <p class="muted">{{ item['company'] }} · {{ item['location'] }}</p>
+            </div><span class="pill">{{ item['status'] }}</span>
+        </article>{% endfor %}</div>{% else %}<div class="empty-state compact">
+        <h3>No applications yet</h3>
+        <p>Explore openings and apply to your next opportunity.</p><a class="button primary"
+            href="{{ url_for('index') }}">Explore jobs</a>
+    </div>{% endif %}
+    {% endif %}
+    {% endblock %}
