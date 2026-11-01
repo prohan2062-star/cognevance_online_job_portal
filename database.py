@@ -1,6 +1,7 @@
 import sqlite3
+import os
 
-DATABASE = "job_portal.db"
+DATABASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "job_portal.db")
 
 
 def get_db_connection():
