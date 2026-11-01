@@ -4,6 +4,8 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from werkzeug.security import generate_password_hash, check_password_hash
 from database import get_db_connection, init_db
 
+init_db()
+
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "development-key-change-before-deployment")
 
